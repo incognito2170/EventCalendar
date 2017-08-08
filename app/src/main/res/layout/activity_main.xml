@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.arabi.eventcalendar.MainActivity">
+
+
+    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/calendarView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:mcv_calendarMode="week"
+        android:paddingBottom="10dp"
+        app:mcv_selectionColor="#E6FFFFFF"
+        app:mcv_dateTextAppearance="@style/CustomTextAppearance"
+        app:mcv_headerTextAppearance="@style/CustomTextAppearance"
+        app:mcv_weekDayTextAppearance="@style/CustomTextAppearance"
+        app:mcv_tileHeight="40dp"
+        app:mcv_arrowColor="@color/white"
+        android:background="#3F51B5"
+        android:visibility="gone"/>
+
+    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/calendarView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        app:mcv_selectionColor="#E6FFFFFF"
+        android:layout_below="@+id/calendarView1"
+        app:mcv_dateTextAppearance="@style/CustomTextAppearance"
+        app:mcv_headerTextAppearance="@style/CustomTextAppearance"
+        app:mcv_weekDayTextAppearance="@style/CustomTextAppearance"
+        app:mcv_tileHeight="40dp"
+        app:mcv_arrowColor="@color/white"
+        android:background="#3F51B5"/>
+
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_pending_works"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/calendarView"
+        android:padding="5dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+</RelativeLayout>
