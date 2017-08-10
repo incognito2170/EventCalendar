@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private List<AppointmentListModelClass> pendingJobItem;
     private AppointmentListAdapter adapter;
     CalendarDay currentDay, eventCalendar;
-    MaterialCalendarView calendar, calendar1;
+    MaterialCalendarView calendar;
     GridLayoutManager layoutManager;
     int visibleItemCount;
     int totalItemCount;
@@ -72,11 +72,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         calendar = (MaterialCalendarView) findViewById(R.id.calendarView);
-        calendar1 = (MaterialCalendarView) findViewById(R.id.calendarView1);
 
         currentDay = CalendarDay.today();
         calendar.setSelectedDate(currentDay);
-        calendar1.setSelectedDate(currentDay);
 
         cal = Calendar.getInstance();   //takes the current date as the starting date for event marking
         addEventDecoration(cal);   //passes the current date as the starting date in the range of dates to be set events on
@@ -143,38 +141,6 @@ public class MainActivity extends AppCompatActivity {
             }
             });
 
-
-        calendar1.setOnDateChangedListener(new OnDateSelectedListener() {
-            @Override
-            public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
-
-                isSelected = calendar1.getSelectedDate().equals(currentDay);
-
-                if(!isSelected && !isCurrentDayDecoratorAdded){
-                    calendar.addDecorator(currentDayDecorator);
-                    isCurrentDayDecoratorAdded = true;
-                }
-                else if(isSelected && isCurrentDayDecoratorAdded){
-                    calendar.removeDecorator(currentDayDecorator);
-                    isCurrentDayDecoratorAdded = false;
-                }
-                else{
-                    selectedDayInString = convertInString(date);
-                    Toast.makeText(getApplicationContext(), "Selected date is: " +selectedDayInString , Toast.LENGTH_SHORT).show();
-                }
-
-
-
-//                calendar.state().edit()
-//                        .setFirstDayOfWeek(Calendar.SUNDAY)
-//                        .setMinimumDate(CalendarDay.from(calendar.getSelectedDate().getYear(), calendar.getSelectedDate().getMonth(), (calendar.getSelectedDate().getDay()-6)))
-//                        .setMaximumDate(CalendarDay.from(calendar.getSelectedDate().getYear(), calendar.getSelectedDate().getMonth(), (calendar.getSelectedDate().getDay()+6)))
-//                        .setCalendarDisplayMode(CalendarMode.WEEKS)
-//                        .commit();
-
-                InitPendingJobRecyclerView();
-            }
-        });
     }
 
 
@@ -189,7 +155,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         calendar.addDecorators(listDecor);
-        calendar1.addDecorators(listDecor);
     }
 
 
@@ -298,11 +263,9 @@ public class MainActivity extends AppCompatActivity {
                         case 1:
                             System.out.println("scrollState = 1");
                             calendar.setVisibility(View.GONE);
-                            calendar1.setVisibility(View.VISIBLE);
                             break;
                         case 0:
                             System.out.println("scrollState = 0");
-                            calendar1.setVisibility(View.GONE);
                             calendar.setVisibility(View.VISIBLE);
                             break;
                     }

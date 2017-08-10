@@ -2,12 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/cancelAppinment"
-        android:title="Remove patient" />
+        android:id="@+id/changeAppointment"
+        android:title="Change Appointment" />
 
     <item
-        android:id="@+id/changeDate"
-        android:title="Change date" />
+        android:id="@+id/cancelAppointment"
+        android:title="Cancel Appointment" />
 
 
 </menu>

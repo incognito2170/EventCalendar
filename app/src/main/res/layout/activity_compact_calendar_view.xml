@@ -1,0 +1,89 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:animateLayoutChanges="true"
+    android:id="@+id/main_content">
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
+    android:id="@+id/topLayout"
+    android:background="@color/colorPrimaryDark">
+
+    <ImageButton
+        android:id="@+id/prev_button"
+        android:layout_alignParentLeft="true"
+        android:background="@drawable/calendar_left_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/calendarTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="August 2017"
+        android:textSize="15sp"
+        android:textColor="@color/white"
+        android:textStyle="bold"/>
+
+    <ImageButton
+        android:id="@+id/next_button"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/calendar_right_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</RelativeLayout>
+
+
+    <com.github.sundeepk.compactcalendarview.CompactCalendarView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/compactcalendar_view"
+        android:layout_width="fill_parent"
+        android:layout_height="280dp"
+        android:layout_below="@+id/topLayout"
+        app:compactCalendarTargetHeight="280dp"
+        app:compactCalendarTextSize="12sp"
+        app:compactCalendarBackgroundColor="#3F51B5"
+        app:compactCalendarTextColor="#fff"
+        app:compactCalendarCurrentSelectedDayBackgroundColor="#E6FFFFFF"
+        app:compactCalendarCurrentSelectedDayTextColor="@color/black"
+        app:compactCalendarCurrentDayTextColor="@color/white"
+        app:compactCalendarCurrentDayBackgroundColor="@color/white"
+        app:compactCalendarCurrentDayIndicatorStyle="no_fill_large_indicator"
+        app:compactCalendarEventIndicatorStyle="small_indicator"
+        app:compactCalendarMultiEventIndicatorColor="@color/white"
+        app:compactCalendarOtherMonthDaysTextColor="#534c4c"
+        app:compactCalendarShouldSelectFirstDayOfMonthOnScroll="false"
+        />
+
+
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_below="@+id/compactcalendar_view"
+        android:padding="20dp"
+        android:text="No appointments today"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_pending_works"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView"
+        android:padding="5dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+</RelativeLayout>

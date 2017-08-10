@@ -1,7 +1,9 @@
 package com.arabi.eventcalendar;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,13 +23,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by Sayem43 on 6/13/2017.
+ * Created by Arabi on 08/09/2017.
  */
 
 public class AppointmentListAdapter extends RecyclerView.Adapter<AppointmentListAdapter.ShowsViewHolder> {
 
     public Context context;
     private List<AppointmentListModelClass> pendingJobItems;
+    private String changeMessage = "";
 
     public AppointmentListAdapter(Context context, List<AppointmentListModelClass> pendingJobItems) {
         this.context = context;
@@ -61,14 +64,35 @@ public class AppointmentListAdapter extends RecyclerView.Adapter<AppointmentList
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
-                            case R.id.cancelAppinment:
-                                //handle menu1 clicTo
-                                Toast.makeText(context,"Remove Patient",Toast.LENGTH_SHORT).show();
+                            case R.id.changeAppointment:
+                                //handle menuItem1 click
+                                Toast.makeText(context,"Change Appointment clicked",Toast.LENGTH_SHORT).show();
+                                AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+                                alertDialog.setTitle("Change Appointment Date");
+                                alertDialog.setIcon(R.mipmap.ic_launcher);
+                                alertDialog.setMessage("The patient will be asked to schedule another appointment");
+                                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        });
+                                alertDialog.show();
                                 break;
-                            case R.id.changeDate:
-                                //handle menu2 click
-
-                                Toast.makeText(context,"Change Date",Toast.LENGTH_SHORT).show();
+                            case R.id.cancelAppointment:
+                                //handle menuItem2 click
+                                Toast.makeText(context,"Cancel Appointment clicked",Toast.LENGTH_SHORT).show();
+                                AlertDialog alertDialog1 = new AlertDialog.Builder(context).create();
+                                alertDialog1.setTitle("Cancel Appointment");
+                                alertDialog1.setIcon(R.mipmap.ic_launcher);
+                                alertDialog1.setMessage("The patient will be notified about your cancellation of the appointment");
+                                alertDialog1.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        });
+                                alertDialog1.show();
                                 break;
                         }
                         return false;
@@ -104,7 +128,7 @@ public class AppointmentListAdapter extends RecyclerView.Adapter<AppointmentList
         public ShowsViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            itemView.setOnClickListener(this);
+            imageStuffProfile.setOnClickListener(this);
 
         }
 

@@ -5,24 +5,55 @@ package com.arabi.eventcalendar;
  */
 
 public class AppointmentListModelClass {
-    private String serviceName;
+    private String patientName;
+    private String reason;
     private String startTime;
     private String endTime;
-    private int profileImage;
+    private String profileImage;
+    private String day;
+    private String status;
+    private String timeDuration;
 
-    public AppointmentListModelClass(String serviceName, String startTime, String endTime, int profileImage) {
-        this.serviceName = serviceName;
-        this.startTime = startTime;
-        this.endTime = endTime;
+
+    public String getDay() {
+        return day;
+    }
+
+    public void setDay(String day) {
+        this.day = day;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getPatientName() {
+        return patientName;
+    }
+
+    public void setPatientName(String patientName) {
+        this.patientName = patientName;
+    }
+
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
         this.profileImage = profileImage;
     }
 
-    public String getServiceName() {
-        return serviceName;
+    public String getReason() {
+        return reason;
     }
 
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 
     public String getStartTime() {
@@ -41,11 +72,13 @@ public class AppointmentListModelClass {
         this.endTime = endTime;
     }
 
-    public int getProfileImage() {
-        return profileImage;
+
+    public String getTimeDuration() {
+        return timeDuration;
     }
 
-    public void setProfileImage(int profileImage) {
-        this.profileImage = profileImage;
+    public void setTimeDuration(String timeDuration) {
+        this.timeDuration = timeDuration;
     }
+
 }
