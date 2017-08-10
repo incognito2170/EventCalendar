@@ -49,7 +49,7 @@ public class AppointmentListAdapter extends RecyclerView.Adapter<AppointmentList
 
         AppointmentListModelClass stuffsPendingJobs = pendingJobItems.get(position);
 
-        holder.tvServiceName.setText(stuffsPendingJobs.getServiceName());
+        holder.tvServiceName.setText(stuffsPendingJobs.getPatientName());
         holder.tvStartTime.setText(stuffsPendingJobs.getStartTime());
         holder.tvEndTime.setText(stuffsPendingJobs.getEndTime());
         holder.pop_up_icon.setOnClickListener(new View.OnClickListener() {

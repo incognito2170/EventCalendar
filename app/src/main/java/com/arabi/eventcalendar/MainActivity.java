@@ -208,41 +208,41 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void LoadPendingWorkList() {
-        int[] profileImage = new int[]{
-                R.drawable.patient_profile_pic,
-                R.drawable.patient_profile_pic_2,
-                R.drawable.patient_profile_pic_3};
-
-        AppointmentListModelClass a = new AppointmentListModelClass("Robin van Persie","10:30 AM","11:00 AM", profileImage[0]);
-        pendingJobItem.add(a);
-
-        a = new AppointmentListModelClass("Hakan Calhanoglu","11:00 AM","11:30 AM",profileImage[1]);
-        pendingJobItem.add(a);
-
-        a = new AppointmentListModelClass("Gianluigi Buffon","11:30 AM","12:00 PM",profileImage[2]);
-        pendingJobItem.add(a);
-
-        a = new AppointmentListModelClass("Patient 4","12:00 PM","12:30 PM",profileImage[0]);
-        pendingJobItem.add(a);
-
-        a = new AppointmentListModelClass("Patient 5","12:30 PM","1:00 PM", profileImage[1]);
-        pendingJobItem.add(a);
-
-        a = new AppointmentListModelClass("Patient 6","1:00 PM","1:30 PM",profileImage[2]);
-        pendingJobItem.add(a);
-
-        a = new AppointmentListModelClass("Patient 7","1:30 PM","2:00 PM", profileImage[0]);
-        pendingJobItem.add(a);
-
-        a = new AppointmentListModelClass("Patient 8","2:00 PM","2:30 PM", profileImage[1]);
-        pendingJobItem.add(a);
-
-        a = new AppointmentListModelClass("Patient 9","2:30 PM","3:00 PM",profileImage[2]);
-        pendingJobItem.add(a);
-
-        Collections.shuffle(pendingJobItem);
-
-        adapter.notifyDataSetChanged();
+//        int[] profileImage = new int[]{
+//                R.drawable.patient_profile_pic,
+//                R.drawable.patient_profile_pic_2,
+//                R.drawable.patient_profile_pic_3};
+//
+//        AppointmentListModelClass a = new AppointmentListModelClass("Robin van Persie","10:30 AM","11:00 AM", profileImage[0]);
+//        pendingJobItem.add(a);
+//
+//        a = new AppointmentListModelClass("Hakan Calhanoglu","11:00 AM","11:30 AM",profileImage[1]);
+//        pendingJobItem.add(a);
+//
+//        a = new AppointmentListModelClass("Gianluigi Buffon","11:30 AM","12:00 PM",profileImage[2]);
+//        pendingJobItem.add(a);
+//
+//        a = new AppointmentListModelClass("Patient 4","12:00 PM","12:30 PM",profileImage[0]);
+//        pendingJobItem.add(a);
+//
+//        a = new AppointmentListModelClass("Patient 5","12:30 PM","1:00 PM", profileImage[1]);
+//        pendingJobItem.add(a);
+//
+//        a = new AppointmentListModelClass("Patient 6","1:00 PM","1:30 PM",profileImage[2]);
+//        pendingJobItem.add(a);
+//
+//        a = new AppointmentListModelClass("Patient 7","1:30 PM","2:00 PM", profileImage[0]);
+//        pendingJobItem.add(a);
+//
+//        a = new AppointmentListModelClass("Patient 8","2:00 PM","2:30 PM", profileImage[1]);
+//        pendingJobItem.add(a);
+//
+//        a = new AppointmentListModelClass("Patient 9","2:30 PM","3:00 PM",profileImage[2]);
+//        pendingJobItem.add(a);
+//
+//        Collections.shuffle(pendingJobItem);
+//
+//        adapter.notifyDataSetChanged();
     }
 
     private void InitPendingJobRecyclerView() {

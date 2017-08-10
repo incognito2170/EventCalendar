@@ -1,7 +1,7 @@
 package com.arabi.eventcalendar;
 
 /**
- * Created by Sayem43 on 6/15/2017.
+ * Created by Arabi on 8/11/2017.
  */
 
 public class AppointmentListModelClass {
@@ -9,11 +9,25 @@ public class AppointmentListModelClass {
     private String reason;
     private String startTime;
     private String endTime;
-    private String profileImage;
+    private int profileImage;
     private String day;
     private String status;
     private String timeDuration;
 
+    public AppointmentListModelClass(String patientName, String reason, String startTime, String endTime, int profileImage, String day, String status, String timeDuration) {
+        this.patientName = patientName;
+        this.reason = reason;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.profileImage = profileImage;
+        this.day = day;
+        this.status = status;
+        this.timeDuration = timeDuration;
+    }
+
+    public AppointmentListModelClass() {
+
+    }
 
     public String getDay() {
         return day;
@@ -40,11 +54,11 @@ public class AppointmentListModelClass {
     }
 
 
-    public String getProfileImage() {
+    public int getProfileImage() {
         return profileImage;
     }
 
-    public void setProfileImage(String profileImage) {
+    public void setProfileImage(int profileImage) {
         this.profileImage = profileImage;
     }
 

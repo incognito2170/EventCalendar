@@ -61,12 +61,12 @@ import java.util.TimeZone;
 public class CompactCalendarTest extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    private static final String userToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjIsImlzcyI6Imh0dHA6Ly8xODIuMTYwLjEwOS4xMzIvYXBpL2xvZ2luIiwiaWF0IjoxNTAyMzc0MTU4LCJleHAiOjE1MDIzNzc3NTgsIm5iZiI6MTUwMjM3NDE1OCwianRpIjoiOUxQZHdpeHd4bWtZMTY3VyJ9.jF5muFPfbORxosMsUY3cA2KQ-tLFcoSs4Io43778Yb4";
+    private static final String userToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjIsImlzcyI6Imh0dHA6Ly8xODIuMTYwLjEwOS4xMzIvYXBpL2xvZ2luIiwiaWF0IjoxNTAyMzk4MTAxLCJleHAiOjE1MDI0MDE3MDEsIm5iZiI6MTUwMjM5ODEwMSwianRpIjoiSmpaTnlqZ2ZZS2N4MjZsbSJ9.NhY1iMcvzqt7YIYCkpN81T0LFF2u6AJtQw4BHTPykFE";
     private Calendar currentCalender = Calendar.getInstance(Locale.getDefault());
     private SimpleDateFormat dateFormatForDisplaying = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss a", Locale.getDefault());
     private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
     private SimpleDateFormat dateFormatForDay = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
-    private SimpleDateFormat dateFormatForDisabledDay = new SimpleDateFormat("ww", Locale.getDefault());
+    private SimpleDateFormat dateFormatForDisabledDay = new SimpleDateFormat("E", Locale.getDefault());
     private CompactCalendarView compactCalendarView;
     private Boolean shouldHide = true, shouldShowAnimated = false;
     private List<AppointmentListModelClass> pendingJobItem;
@@ -112,11 +112,10 @@ public class CompactCalendarTest extends AppCompatActivity {
 
         bookingsFromMap = compactCalendarView.getEvents(currentDate);
 
-        if (bookingsFromMap.size()!=0) {
-            Log.d(TAG, "*********Events list "+bookingsFromMap.toString());
+        if (bookingsFromMap.size() != 0) {
+            Log.d(TAG, "*********Events list " + bookingsFromMap.toString());
             InitPendingJobRecyclerView(currentDate, 1);
-        }
-        else{
+        } else {
             InitPendingJobRecyclerView(currentDate, 0);
         }
 
@@ -135,11 +134,10 @@ public class CompactCalendarTest extends AppCompatActivity {
 
                 bookingsFromMap = compactCalendarView.getEvents(dateClicked);
 
-                if (bookingsFromMap.size()!=0) {
-                    Log.d(TAG, "*********Events list "+bookingsFromMap.toString());
+                if (bookingsFromMap.size() != 0) {
+                    Log.d(TAG, "*********Events list " + bookingsFromMap.toString());
                     InitPendingJobRecyclerView(dateClicked, 1);
-                }
-                else{
+                } else {
                     InitPendingJobRecyclerView(dateClicked, 0);
                 }
 
@@ -150,7 +148,6 @@ public class CompactCalendarTest extends AppCompatActivity {
                 calendarTitle.setText(dateFormatForMonth.format(firstDayOfNewMonth));
             }
         });
-
 
 
         //Handle calendar arrow click
@@ -169,9 +166,6 @@ public class CompactCalendarTest extends AppCompatActivity {
         });
 
 
-
-
-
         compactCalendarView.setAnimationListener(new CompactCalendarView.CompactCalendarAnimationListener() {
             @Override
             public void onOpened() {
@@ -183,9 +177,8 @@ public class CompactCalendarTest extends AppCompatActivity {
         });
 
 
-
         // uncomment below to show indicators above small indicator events
-         compactCalendarView.shouldDrawIndicatorsBelowSelectedDays(true);
+        compactCalendarView.shouldDrawIndicatorsBelowSelectedDays(true);
 
         // uncomment below to open onCreate
         //openCalendarOnCreate(v);
@@ -225,9 +218,9 @@ public class CompactCalendarTest extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(CompactCalendarTest.this, LinearLayoutManager.VERTICAL, false);
         rvPendingWorks.setLayoutManager(mLayoutManager);
 
-        rvPendingWorks.addOnScrollListener(new RecyclerView.OnScrollListener(){
+        rvPendingWorks.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState){
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 switch (newState) {
                     case RecyclerView.SCROLL_STATE_IDLE:
                         System.out.println("The RecyclerView is not scrolling");
@@ -243,24 +236,19 @@ public class CompactCalendarTest extends AppCompatActivity {
             }
 
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy){
-                if(dx>0)
-                {
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dx > 0) {
                     System.out.println("Scrolled Right");
 
-                }
-                else if(dx < 0)
-                {
+                } else if (dx < 0) {
                     System.out.println("Scrolled Left");
 
-                }
-                else {
+                } else {
 
                     System.out.println("No Horizontal Scrolled");
                 }
 
-                if(dy>0)
-                {
+                if (dy > 0) {
                     System.out.println("Scrolled Downwards");
                     scrollState = 0;
 
@@ -274,15 +262,13 @@ public class CompactCalendarTest extends AppCompatActivity {
                                     shouldHide = !shouldHide;
                                     shouldShowAnimated = !shouldShowAnimated;
                                     calendarTitle.setText(dateFormatForDay.format(dateClickedByUser));
-                                }else{
+                                } else {
                                     break;
                                 }
                             }
                             break;
                     }
-                }
-                else if(dy < 0)
-                {
+                } else if (dy < 0) {
                     System.out.println("Scrolled Upwards");
                     scrollState = 1;
 
@@ -296,7 +282,7 @@ public class CompactCalendarTest extends AppCompatActivity {
                                     shouldShowAnimated = !shouldShowAnimated;
                                     shouldHide = !shouldHide;
                                     calendarTitle.setText(dateFormatForMonth.format(dateClickedByUser));
-                                }else{
+                                } else {
                                     break;
                                 }
 
@@ -304,8 +290,7 @@ public class CompactCalendarTest extends AppCompatActivity {
                             }
                             break;
                     }
-                }
-                else {
+                } else {
 
                     System.out.println("No Vertical Scrolled");
                 }
@@ -317,78 +302,82 @@ public class CompactCalendarTest extends AppCompatActivity {
         rvPendingWorks.setAdapter(adapter);
 
 
-        if(hasEvent==1) {
+        if (hasEvent == 1) {
+            textView.setVisibility(View.GONE);
             LoadPendingWorkList();
-        }
-        else{
+        } else {
             textView.setVisibility(View.VISIBLE);
         }
     }
 
     private void LoadPendingWorkList() {
-//        int[] profileImage = new int[]{
-//                R.drawable.patient_profile_pic,
-//                R.drawable.patient_profile_pic_2,
-//                R.drawable.patient_profile_pic_3};
-//
-//        AppointmentListModelClass a = new AppointmentListModelClass("Robin van Persie","10:30 AM","11:00 AM", profileImage[0]);
-//        pendingJobItem.add(a);
-//
-//        a = new AppointmentListModelClass("Hakan Calhanoglu","11:00 AM","11:30 AM",profileImage[1]);
-//        pendingJobItem.add(a);
-//
-//        a = new AppointmentListModelClass("Gianluigi Buffon","11:30 AM","12:00 PM",profileImage[2]);
-//        pendingJobItem.add(a);
-//
-//        a = new AppointmentListModelClass("Patient 4","12:00 PM","12:30 PM",profileImage[0]);
-//        pendingJobItem.add(a);
-//
-//        a = new AppointmentListModelClass("Patient 5","12:30 PM","1:00 PM", profileImage[1]);
-//        pendingJobItem.add(a);
-//
-//        a = new AppointmentListModelClass("Patient 6","1:00 PM","1:30 PM",profileImage[2]);
-//        pendingJobItem.add(a);
-//
-//        a = new AppointmentListModelClass("Patient 7","1:30 PM","2:00 PM", profileImage[0]);
-//        pendingJobItem.add(a);
-//
-//        a = new AppointmentListModelClass("Patient 8","2:00 PM","2:30 PM", profileImage[1]);
-//        pendingJobItem.add(a);
-//
-//        a = new AppointmentListModelClass("Patient 9","2:30 PM","3:00 PM",profileImage[2]);
-//        pendingJobItem.add(a);
-//
-//        Collections.shuffle(pendingJobItem);
-//
-//        adapter.notifyDataSetChanged();
+        int[] profileImage = new int[]{
+                R.drawable.patient_profile_pic,
+                R.drawable.patient_profile_pic_2,
+                R.drawable.patient_profile_pic_3};
+
+        AppointmentListModelClass a = new AppointmentListModelClass("Robin van Persie", null, "10:30 AM","11:00 AM", profileImage[0], null, null, null);
+        pendingJobItem.add(a);
+
+        a = new AppointmentListModelClass("Hakan Calhanoglu", null, "11:00 AM","11:30 AM",profileImage[1], null, null, null);
+        pendingJobItem.add(a);
+
+        a = new AppointmentListModelClass("Gianluigi Buffon", null, "11:30 AM","12:00 PM",profileImage[2], null, null, null);
+        pendingJobItem.add(a);
+
+        a = new AppointmentListModelClass("Patient 4", null, "12:00 PM", "12:30 PM",profileImage[0], null, null, null);
+        pendingJobItem.add(a);
+
+        a = new AppointmentListModelClass("Patient 5", null, "12:30 PM","1:00 PM", profileImage[1], null, null, null);
+        pendingJobItem.add(a);
+
+        a = new AppointmentListModelClass("Patient 6", null, "1:00 PM","1:30 PM",profileImage[2], null, null, null);
+        pendingJobItem.add(a);
+
+        a = new AppointmentListModelClass("Patient 7", null, "1:30 PM","2:00 PM", profileImage[0], null, null, null);
+        pendingJobItem.add(a);
+
+        a = new AppointmentListModelClass("Patient 8", null, "2:00 PM","2:30 PM", profileImage[1], null, null, null);
+        pendingJobItem.add(a);
+
+        a = new AppointmentListModelClass("Patient 9", null, "2:30 PM","3:00 PM",profileImage[2], null, null, null);
+        pendingJobItem.add(a);
+
+        Collections.shuffle(pendingJobItem);
+
+        adapter.notifyDataSetChanged();
     }
 
     private void addEvents(int day, int month, int year) {
 
-            currentCalender.setTime(new Date());
+        currentCalender.setTime(new Date());
 
-            currentCalender.set(Calendar.DAY_OF_MONTH, day);
+        currentCalender.set(Calendar.DAY_OF_MONTH, day);
 
-            if (month > -1) {
-                currentCalender.set(Calendar.MONTH, month);
-            }
+        if (month > -1) {
+            currentCalender.set(Calendar.MONTH, month);
+        }
 
-            if (year > -1) {
-                currentCalender.set(Calendar.ERA, GregorianCalendar.AD);
-                currentCalender.set(Calendar.YEAR, year);
-            }
+        if (year > -1) {
+            currentCalender.set(Calendar.ERA, GregorianCalendar.AD);
+            currentCalender.set(Calendar.YEAR, year);
+        }
 
-            setToMidnight(currentCalender);
+        setToMidnight(currentCalender);
 
-            long timeInMillis = currentCalender.getTimeInMillis();
+        long timeInMillis = currentCalender.getTimeInMillis();
 
-            List<Event> events = getEvents(timeInMillis);
+        List<Event> events = getEvents(timeInMillis);
 
-            compactCalendarView.addEvents(events);
+        compactCalendarView.addEvents(events);
     }
 
     private List<Event> getEvents(long timeInMillis) {
-            return Arrays.asList(new Event(Color.argb(255, 169, 68, 65), timeInMillis, "Event at " + new Date(timeInMillis)));
+        return Arrays.asList(new Event(Color.argb(255, 169, 68, 65), timeInMillis, "Event at " + new Date(timeInMillis)));
+    }
+
+    private List<Event> getDisabledDays(long timeInMillis) {
+        return Arrays.asList(new Event(Color.argb(255, 169, 68, 65), timeInMillis, "Event at " + new Date(timeInMillis)));
     }
 
     private void setToMidnight(Calendar calendar) {
@@ -413,15 +402,13 @@ public class CompactCalendarTest extends AppCompatActivity {
     }
 
 
-
-
     private class scheduleAPI extends AsyncTask<String, String, String> {
         String userToken;
 
 
         private scheduleAPI(String userToken) {
             //set context variables if required
-            this.userToken=userToken;
+            this.userToken = userToken;
         }
 
 
@@ -429,7 +416,7 @@ public class CompactCalendarTest extends AppCompatActivity {
         protected void onPreExecute() {
 
             super.onPreExecute();
-            Log.d("error", "statusReport: onPreExecute e ERROR!!!");
+            Log.d("error", "statusReport: onPreExecute e dhukse!!!");
 
         }
 
@@ -437,7 +424,7 @@ public class CompactCalendarTest extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
 
-            Log.d("error", "statusReport: doInBackground e ERROR!!!");
+            Log.d("error", "statusReport: doInBackground e dhukse!!!");
 
             String resultToDisplay = "";
 //*****************************************************************
@@ -446,7 +433,7 @@ public class CompactCalendarTest extends AppCompatActivity {
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost("http://182.160.109.132/api/doctor-schedule/2");
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
-            nameValuePairs.add(new BasicNameValuePair("user_token", userToken));
+            nameValuePairs.add(new BasicNameValuePair("token", userToken));
 
 
 // Execute HTTP Post Request
@@ -470,7 +457,7 @@ public class CompactCalendarTest extends AppCompatActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            Log.d("error", "statusReport: onPostExecute e ERROR!!!");
+            Log.d("error", "statusReport: onPostExecute e dhukse!!!");
 
             try {
                 Log.d("jsonData", "+++++++++" + result);
@@ -478,15 +465,17 @@ public class CompactCalendarTest extends AppCompatActivity {
                 JSONObject json = new JSONObject(jsonObj.getString("result"));
 
 
-                if(json.getString("status").equals("success")){
+                if (json.getString("status").equals("success")) {
                     JSONArray scheduleArray = json.getJSONArray("doctor_time_schedules");
+
+                    Log.d("array", "length of scheduleArray: "+scheduleArray.length());
 
                     allItems.clear();
 
                     for (int i = 0; i < scheduleArray.length(); i++) {
 
                         JSONObject scheduleJson = scheduleArray.getJSONObject(i);
-                        Log.d("jsonData", i + "+++++++++" + scheduleJson);
+                        Log.d("jsonData", "jsonData#"+ i + "+++++++++" + scheduleJson);
 
 
                         schedule = new AppointmentListModelClass();
@@ -494,21 +483,41 @@ public class CompactCalendarTest extends AppCompatActivity {
                         schedule.setStatus(scheduleJson.getString("status"));
                         allItems.add(schedule);
 
-                        if(schedule.getStatus().equals("0"))
-                        {
+                        if (schedule.getStatus().equals("0")) {
                             disabledDays.add(schedule.getDay());
                         }
                     }
 
-                    for(int j=0; j < disabledDays.size(); j++){
-                        if(disabledDays.get(j).equals("Sun")){
-                            compactCalendarView.setCurrentDate();
-                            compactCalendarView.getF
+                    for (int j = 0; j < disabledDays.size(); j++) {
+                        currentCalender.setTime(new Date());
+
+                        if (disabledDays.get(j).equals("Sun")) {
+                            currentCalender.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+                        }else if(disabledDays.get(j).equals("Mon")){
+                            currentCalender.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+                        }else if(disabledDays.get(j).equals("Tue")){
+                            currentCalender.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
+                        }else if(disabledDays.get(j).equals("Wed")){
+                            currentCalender.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);
+                        }else if(disabledDays.get(j).equals("Thu")){
+                            currentCalender.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
+                        }else if(disabledDays.get(j).equals("Fri")){
+                            currentCalender.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
+                        }else if(disabledDays.get(j).equals("Sat")){
+                            currentCalender.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
                         }
+
+                        setToMidnight(currentCalender);
+
+                        long timeInMillis = currentCalender.getTimeInMillis();
+
+                        List<Event> disabledDays = getDisabledDays(timeInMillis);
+
+                        compactCalendarView.addEvents(disabledDays);
+
                     }
 
-                }
-                else {
+                } else {
 
                     Toast.makeText(CompactCalendarTest.this, "There is no data to display",
                             Toast.LENGTH_SHORT).show();
