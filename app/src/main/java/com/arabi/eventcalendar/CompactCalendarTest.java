@@ -61,9 +61,9 @@ import java.util.TimeZone;
 public class CompactCalendarTest extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    private static final String userToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjIsImlzcyI6Imh0dHA6Ly8xODIuMTYwLjEwOS4xMzIvYXBpL2xvZ2luIiwiaWF0IjoxNTAyMzk4MTAxLCJleHAiOjE1MDI0MDE3MDEsIm5iZiI6MTUwMjM5ODEwMSwianRpIjoiSmpaTnlqZ2ZZS2N4MjZsbSJ9.NhY1iMcvzqt7YIYCkpN81T0LFF2u6AJtQw4BHTPykFE";
+    private static final String userId = "31";
+    private static final String userToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjMxLCJpc3MiOiJodHRwOi8vMTgyLjE2MC4xMDkuMTMyL2FwaS9sb2dpbiIsImlhdCI6MTUwMjk1MTgwNiwiZXhwIjoxNTM0NDg3ODA2LCJuYmYiOjE1MDI5NTE4MDYsImp0aSI6IkMzUTdDTFdQWDlpNkVMdFIifQ.16cEw6DMS3Z3UqCTEh4lM49QrkHIZRTfXwJ_VXnfk7g";
     private Calendar currentCalender = Calendar.getInstance(Locale.getDefault());
-    private SimpleDateFormat dateFormatForDisplaying = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss a", Locale.getDefault());
     private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
     private SimpleDateFormat dateFormatForDay = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
     private SimpleDateFormat dateFormatForDisabledDay = new SimpleDateFormat("E", Locale.getDefault());
@@ -73,14 +73,17 @@ public class CompactCalendarTest extends AppCompatActivity {
     private AppointmentListAdapter adapter;
     private RecyclerView rvPendingWorks;
     private RecyclerView.LayoutManager mLayoutManager;
-    private int scrollState;
     private TextView calendarTitle;
     private Date currentDate;
     private List<Event> bookingsFromMap;
-    private List<String> disabledDays;
     private TextView textView;
-    private AppointmentListModelClass schedule;
+    private String dayInString, monthInString, yearInString;
+    private AppointmentListModelClass schedule, appointments;
     private List<AppointmentListModelClass> allItems = new ArrayList<AppointmentListModelClass>();
+    private ImageButton showPreviousMonthBut;
+    private ImageButton showNextMonthBut;
+    private Boolean fromAppointmentDays = false;
+    private Boolean fromDisabledDays = false;
 
 
     @Override
@@ -90,8 +93,8 @@ public class CompactCalendarTest extends AppCompatActivity {
 
         rvPendingWorks = (RecyclerView) findViewById(R.id.rv_pending_works);
 
-        final ImageButton showPreviousMonthBut = (ImageButton) findViewById(R.id.prev_button);
-        final ImageButton showNextMonthBut = (ImageButton) findViewById(R.id.next_button);
+        showPreviousMonthBut = (ImageButton) findViewById(R.id.prev_button);
+        showNextMonthBut = (ImageButton) findViewById(R.id.next_button);
         calendarTitle = (TextView) findViewById(R.id.calendarTitle);
         textView = (TextView) findViewById(R.id.textView);
 
@@ -102,11 +105,12 @@ public class CompactCalendarTest extends AppCompatActivity {
         compactCalendarView.invalidate();
 
 
-        new scheduleAPI(userToken).execute();
+        new scheduleAPI(userId, userToken).execute();
+        new appointmentsAPI(userId, userToken).execute();
 
 
-        addEvents(3, 7, 2017); //send the actual_date, (actual_month-1), actual_year received from API but without zero infront (e.g: not as 03, but as 3)
-        addEvents(4, 8, 2017); //send the actual_date, (actual_month-1), actual_year received from API but without zero infront (e.g: not as 03, but as 3)
+//        addEvents(3, 7, 2017); //send the actual_date, (actual_month-1), actual_year received from API but without zero infront (e.g: not as 03, but as 3)
+//        addEvents(4, 8, 2017); //send the actual_date, (actual_month-1), actual_year received from API but without zero infront (e.g: not as 03, but as 3)
 
         currentDate = new Date();
 
@@ -114,31 +118,46 @@ public class CompactCalendarTest extends AppCompatActivity {
 
         if (bookingsFromMap.size() != 0) {
             Log.d(TAG, "*********Events list " + bookingsFromMap.toString());
-            InitPendingJobRecyclerView(currentDate, 1);
+            if(!fromAppointmentDays && !fromDisabledDays){
+                InitPendingJobRecyclerView(currentDate, false, false);
+            } else if(!fromAppointmentDays && fromDisabledDays){
+                InitPendingJobRecyclerView(currentDate, false, true);
+            } else if(fromAppointmentDays && !fromDisabledDays){
+                InitPendingJobRecyclerView(currentDate, true, false);
+            } else if(fromAppointmentDays && fromDisabledDays){
+                InitPendingJobRecyclerView(currentDate, true, true);
+            }
         } else {
-            InitPendingJobRecyclerView(currentDate, 0);
+            InitPendingJobRecyclerView(currentDate, false, false);
         }
 
         calendarTitle.setText(dateFormatForMonth.format(compactCalendarView.getFirstDayOfCurrentMonth()));
 
-        logEventsByMonth(compactCalendarView);
 
-
-        //set title on calendar scroll
+        //Handle 'calendar date clicks' and 'custom toolbar text on month scroll'
         compactCalendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
-                calendarTitle.setText(dateFormatForMonth.format(dateClicked));
 
-                Log.d(TAG, "inside onclick " + dateClicked);
+                calendarTitle.setText(dateFormatForMonth.format(dateClicked));
 
                 bookingsFromMap = compactCalendarView.getEvents(dateClicked);
 
                 if (bookingsFromMap.size() != 0) {
+
                     Log.d(TAG, "*********Events list " + bookingsFromMap.toString());
-                    InitPendingJobRecyclerView(dateClicked, 1);
+
+                    if(!fromAppointmentDays && !fromDisabledDays){
+                        InitPendingJobRecyclerView(currentDate, false, false);
+                    } else if(!fromAppointmentDays && fromDisabledDays){
+                        InitPendingJobRecyclerView(currentDate, false, true);
+                    } else if(fromAppointmentDays && !fromDisabledDays){
+                        InitPendingJobRecyclerView(currentDate, true, false);
+                    } else if(fromAppointmentDays && fromDisabledDays){
+                        InitPendingJobRecyclerView(currentDate, true, true);
+                    }
                 } else {
-                    InitPendingJobRecyclerView(dateClicked, 0);
+                    InitPendingJobRecyclerView(currentDate, false, false);
                 }
 
             }
@@ -177,40 +196,19 @@ public class CompactCalendarTest extends AppCompatActivity {
         });
 
 
-        // uncomment below to show indicators above small indicator events
         compactCalendarView.shouldDrawIndicatorsBelowSelectedDays(true);
 
-        // uncomment below to open onCreate
-        //openCalendarOnCreate(v);
     }
 
-
-    private void openCalendarOnCreate(View v) {
-        final RelativeLayout layout = (RelativeLayout) findViewById(R.id.main_content);
-        ViewTreeObserver vto = layout.getViewTreeObserver();
-        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                if (Build.VERSION.SDK_INT < 16) {
-                    layout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                } else {
-                    layout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                }
-                compactCalendarView.showCalendarWithAnimation();
-            }
-        });
-    }
 
     @Override
     public void onResume() {
         super.onResume();
         calendarTitle.setText(dateFormatForMonth.format(compactCalendarView.getFirstDayOfCurrentMonth()));
-        // Set to current day on resume to set calendar to latest day
-        // toolbar.setTitle(dateFormatForMonth.format(new Date()));
     }
 
 
-    private void InitPendingJobRecyclerView(final Date dateClickedByUser, int hasEvent) {
+    private void InitPendingJobRecyclerView(final Date dateClickedByUser, Boolean hasEvent, Boolean fromDisabledDaysChecker) {
 
         pendingJobItem = new ArrayList<>();
         adapter = new AppointmentListAdapter(this, pendingJobItem);
@@ -250,48 +248,34 @@ public class CompactCalendarTest extends AppCompatActivity {
 
                 if (dy > 0) {
                     System.out.println("Scrolled Downwards");
-                    scrollState = 0;
 
-                    switch (scrollState) {
-                        case 0:
-                            System.out.println("scrollState = 1");
-                            if (!compactCalendarView.isAnimating()) {
 
-                                if (shouldHide) {
-                                    compactCalendarView.hideCalendar();
-                                    shouldHide = !shouldHide;
-                                    shouldShowAnimated = !shouldShowAnimated;
-                                    calendarTitle.setText(dateFormatForDay.format(dateClickedByUser));
-                                } else {
-                                    break;
-                                }
-                            }
-                            break;
+                    if (!compactCalendarView.isAnimating()) {
+                        if (shouldHide) {
+                            compactCalendarView.hideCalendar();
+                            shouldHide = !shouldHide;
+                            shouldShowAnimated = !shouldShowAnimated;
+                            showNextMonthBut.setVisibility(View.GONE);
+                            showPreviousMonthBut.setVisibility(View.GONE);
+                            calendarTitle.setText(dateFormatForDay.format(dateClickedByUser));
+                        }
                     }
+
                 } else if (dy < 0) {
                     System.out.println("Scrolled Upwards");
-                    scrollState = 1;
 
-                    switch (scrollState) {
-                        case 1:
-                            System.out.println("scrollState = 0");
-                            if (!compactCalendarView.isAnimating()) {
+                    if (!compactCalendarView.isAnimating()) {
 
-                                if (shouldShowAnimated) {
-                                    compactCalendarView.showCalendarWithAnimation();
-                                    shouldShowAnimated = !shouldShowAnimated;
-                                    shouldHide = !shouldHide;
-                                    calendarTitle.setText(dateFormatForMonth.format(dateClickedByUser));
-                                } else {
-                                    break;
-                                }
-
-
-                            }
-                            break;
+                        if (shouldShowAnimated) {
+                            compactCalendarView.showCalendarWithAnimation();
+                            shouldShowAnimated = !shouldShowAnimated;
+                            shouldHide = !shouldHide;
+                            showNextMonthBut.setVisibility(View.VISIBLE);
+                            showPreviousMonthBut.setVisibility(View.VISIBLE);
+                            calendarTitle.setText(dateFormatForMonth.format(dateClickedByUser));
+                        }
                     }
                 } else {
-
                     System.out.println("No Vertical Scrolled");
                 }
 
@@ -302,11 +286,16 @@ public class CompactCalendarTest extends AppCompatActivity {
         rvPendingWorks.setAdapter(adapter);
 
 
-        if (hasEvent == 1) {
+        if (!hasEvent && !fromDisabledDaysChecker) {
+            textView.setVisibility(View.VISIBLE);
+        } else if(!hasEvent && fromDisabledDaysChecker){
+            textView.setVisibility(View.VISIBLE);
+        } else if(hasEvent && !fromDisabledDaysChecker){
             textView.setVisibility(View.GONE);
             LoadPendingWorkList();
-        } else {
-            textView.setVisibility(View.VISIBLE);
+        } else if(hasEvent && fromDisabledDaysChecker){
+            textView.setVisibility(View.GONE);
+            LoadPendingWorkList();
         }
     }
 
@@ -316,31 +305,31 @@ public class CompactCalendarTest extends AppCompatActivity {
                 R.drawable.patient_profile_pic_2,
                 R.drawable.patient_profile_pic_3};
 
-        AppointmentListModelClass a = new AppointmentListModelClass("Robin van Persie", null, "10:30 AM","11:00 AM", profileImage[0], null, null, null);
+        AppointmentListModelClass a = new AppointmentListModelClass("Robin van Persie", null, null, "10:30 AM", "11:00 AM", profileImage[0], null, null, null, null);
         pendingJobItem.add(a);
 
-        a = new AppointmentListModelClass("Hakan Calhanoglu", null, "11:00 AM","11:30 AM",profileImage[1], null, null, null);
+        a = new AppointmentListModelClass("Hakan Calhanoglu", null, null, "11:00 AM", "11:30 AM", profileImage[1], null, null, null, null);
         pendingJobItem.add(a);
 
-        a = new AppointmentListModelClass("Gianluigi Buffon", null, "11:30 AM","12:00 PM",profileImage[2], null, null, null);
+        a = new AppointmentListModelClass("Gianluigi Buffon", null, null, "11:30 AM", "12:00 PM", profileImage[2], null, null, null, null);
         pendingJobItem.add(a);
 
-        a = new AppointmentListModelClass("Patient 4", null, "12:00 PM", "12:30 PM",profileImage[0], null, null, null);
+        a = new AppointmentListModelClass("Patient 4", null, null, "12:00 PM", "12:30 PM", profileImage[0], null, null, null, null);
         pendingJobItem.add(a);
 
-        a = new AppointmentListModelClass("Patient 5", null, "12:30 PM","1:00 PM", profileImage[1], null, null, null);
+        a = new AppointmentListModelClass("Patient 5", null, null, "12:30 PM", "1:00 PM", profileImage[1], null, null, null, null);
         pendingJobItem.add(a);
 
-        a = new AppointmentListModelClass("Patient 6", null, "1:00 PM","1:30 PM",profileImage[2], null, null, null);
+        a = new AppointmentListModelClass("Patient 6", null, null, "1:00 PM", "1:30 PM", profileImage[2], null, null, null, null);
         pendingJobItem.add(a);
 
-        a = new AppointmentListModelClass("Patient 7", null, "1:30 PM","2:00 PM", profileImage[0], null, null, null);
+        a = new AppointmentListModelClass("Patient 7", null, null, "1:30 PM", "2:00 PM", profileImage[0], null, null, null, null);
         pendingJobItem.add(a);
 
-        a = new AppointmentListModelClass("Patient 8", null, "2:00 PM","2:30 PM", profileImage[1], null, null, null);
+        a = new AppointmentListModelClass("Patient 8", null, null, "2:00 PM", "2:30 PM", profileImage[1], null, null, null, null);
         pendingJobItem.add(a);
 
-        a = new AppointmentListModelClass("Patient 9", null, "2:30 PM","3:00 PM",profileImage[2], null, null, null);
+        a = new AppointmentListModelClass("Patient 9", null, null, "2:30 PM", "3:00 PM", profileImage[2], null, null, null, null);
         pendingJobItem.add(a);
 
         Collections.shuffle(pendingJobItem);
@@ -349,6 +338,8 @@ public class CompactCalendarTest extends AppCompatActivity {
     }
 
     private void addEvents(int day, int month, int year) {
+
+        fromAppointmentDays = true;
 
         currentCalender.setTime(new Date());
 
@@ -363,7 +354,6 @@ public class CompactCalendarTest extends AppCompatActivity {
             currentCalender.set(Calendar.YEAR, year);
         }
 
-        setToMidnight(currentCalender);
 
         long timeInMillis = currentCalender.getTimeInMillis();
 
@@ -373,41 +363,20 @@ public class CompactCalendarTest extends AppCompatActivity {
     }
 
     private List<Event> getEvents(long timeInMillis) {
-        return Arrays.asList(new Event(Color.argb(255, 169, 68, 65), timeInMillis, "Event at " + new Date(timeInMillis)));
+        return Arrays.asList(new Event(Color.argb(255, 0, 255, 0), timeInMillis, "Event at " + new Date(timeInMillis)));
     }
 
     private List<Event> getDisabledDays(long timeInMillis) {
-        return Arrays.asList(new Event(Color.argb(255, 169, 68, 65), timeInMillis, "Event at " + new Date(timeInMillis)));
-    }
-
-    private void setToMidnight(Calendar calendar) {
-        calendar.set(Calendar.HOUR_OF_DAY, Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
-        calendar.set(Calendar.MINUTE, Calendar.getInstance().get(Calendar.MINUTE));
-        calendar.set(Calendar.SECOND, Calendar.getInstance().get(Calendar.SECOND));
-        calendar.set(Calendar.MILLISECOND, Calendar.getInstance().get(Calendar.MILLISECOND));
-    }
-
-
-    private void logEventsByMonth(CompactCalendarView compactCalendarView) {
-        currentCalender.setTime(new Date());
-        currentCalender.set(Calendar.DAY_OF_MONTH, 1);
-        currentCalender.set(Calendar.MONTH, Calendar.getInstance().get(Calendar.MONTH));
-        List<String> dates = new ArrayList<>();
-        for (Event e : compactCalendarView.getEventsForMonth(new Date())) {
-            dates.add(dateFormatForDisplaying.format(e.getTimeInMillis()));
-        }
-
-        Log.d(TAG, "Events for Aug with simple date formatter: " + dates);
-        Log.d(TAG, "Events for Aug month using default local and timezone: " + compactCalendarView.getEventsForMonth(currentCalender.getTime()));
+        return Arrays.asList(new Event(Color.argb(255, 255, 0, 0), timeInMillis, "Event at " + new Date(timeInMillis)));
     }
 
 
     private class scheduleAPI extends AsyncTask<String, String, String> {
-        String userToken;
+        String userId, userToken;
 
 
-        private scheduleAPI(String userToken) {
-            //set context variables if required
+        private scheduleAPI(String userId, String userToken) {
+            this.userId = userId;
             this.userToken = userToken;
         }
 
@@ -431,12 +400,12 @@ public class CompactCalendarTest extends AppCompatActivity {
 
 
             HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost("http://182.160.109.132/api/doctor-schedule/2");
+            HttpPost httppost = new HttpPost("http://182.160.109.132/api/doctor-schedule/"+userId);
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
             nameValuePairs.add(new BasicNameValuePair("token", userToken));
 
 
-// Execute HTTP Post Request
+//// Execute HTTP Post Request
             HttpResponse response = null;
             try {
                 httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
@@ -457,8 +426,6 @@ public class CompactCalendarTest extends AppCompatActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            Log.d("error", "statusReport: onPostExecute e dhukse!!!");
-
             try {
                 Log.d("jsonData", "+++++++++" + result);
                 JSONObject jsonObj = new JSONObject(result);
@@ -468,63 +435,179 @@ public class CompactCalendarTest extends AppCompatActivity {
                 if (json.getString("status").equals("success")) {
                     JSONArray scheduleArray = json.getJSONArray("doctor_time_schedules");
 
-                    Log.d("array", "length of scheduleArray: "+scheduleArray.length());
+                    Log.d("array", "length of scheduleArray: " + scheduleArray.length());
 
                     allItems.clear();
 
-                    for (int i = 0; i < scheduleArray.length(); i++) {
+                    if(scheduleArray.length()!=0) {
 
-                        JSONObject scheduleJson = scheduleArray.getJSONObject(i);
-                        Log.d("jsonData", "jsonData#"+ i + "+++++++++" + scheduleJson);
+                        for (int i = 0; i < scheduleArray.length(); i++) {
+
+                            JSONObject scheduleJson = scheduleArray.getJSONObject(i);
+                            Log.d("jsonData", "jsonData#" + i + "+++++++++" + scheduleJson);
 
 
-                        schedule = new AppointmentListModelClass();
-                        schedule.setDay(scheduleJson.getString("day"));
-                        schedule.setStatus(scheduleJson.getString("status"));
-                        allItems.add(schedule);
+                            schedule = new AppointmentListModelClass();
+                            schedule.setDay(scheduleJson.getString("day"));
+                            schedule.setStatus(scheduleJson.getString("status"));
+                            allItems.add(schedule);
 
-                        if (schedule.getStatus().equals("0")) {
-                            disabledDays.add(schedule.getDay());
+
+                            if(schedule.getStatus().equals("0")) {
+
+                                fromDisabledDays = true;
+
+                                currentCalender.setTime(new Date());
+
+                                currentCalender.set(Calendar.WEEK_OF_YEAR, Calendar.getInstance().get(Calendar.WEEK_OF_YEAR));
+
+                                int remainingWeeks = 52 - currentCalender.get(Calendar.WEEK_OF_YEAR);
+                                Log.d("dayOfWeek", "Remaining weeks in 2017: " + remainingWeeks);
+
+                                for (int j = 0; j <= remainingWeeks; j++) {
+                                    if (schedule.getDay().equals("Sun")) {
+                                        currentCalender.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+                                    } else if (schedule.getDay().equals("Mon")) {
+                                        currentCalender.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+                                    } else if (schedule.getDay().equals("Tue")) {
+                                        currentCalender.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
+                                    } else if (schedule.getDay().equals("Wed")) {
+                                        currentCalender.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);
+                                    } else if (schedule.getDay().equals("Thu")) {
+                                        currentCalender.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
+                                    } else if (schedule.getDay().equals("Fri")) {
+                                        currentCalender.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
+                                    } else if (schedule.getDay().equals("Sat")) {
+                                        currentCalender.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+                                    }
+
+
+                                    long timeInMillis = currentCalender.getTimeInMillis();
+
+                                    List<Event> disabledDaysEvent = getDisabledDays(timeInMillis);
+
+                                    compactCalendarView.addEvents(disabledDaysEvent);
+
+                                    currentCalender.add(Calendar.WEEK_OF_YEAR, 1);
+                                }
+                            }
                         }
                     }
 
-                    for (int j = 0; j < disabledDays.size(); j++) {
-                        currentCalender.setTime(new Date());
-
-                        if (disabledDays.get(j).equals("Sun")) {
-                            currentCalender.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-                        }else if(disabledDays.get(j).equals("Mon")){
-                            currentCalender.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-                        }else if(disabledDays.get(j).equals("Tue")){
-                            currentCalender.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
-                        }else if(disabledDays.get(j).equals("Wed")){
-                            currentCalender.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);
-                        }else if(disabledDays.get(j).equals("Thu")){
-                            currentCalender.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
-                        }else if(disabledDays.get(j).equals("Fri")){
-                            currentCalender.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
-                        }else if(disabledDays.get(j).equals("Sat")){
-                            currentCalender.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
-                        }
-
-                        setToMidnight(currentCalender);
-
-                        long timeInMillis = currentCalender.getTimeInMillis();
-
-                        List<Event> disabledDays = getDisabledDays(timeInMillis);
-
-                        compactCalendarView.addEvents(disabledDays);
-
-                    }
-
-                } else {
-
-                    Toast.makeText(CompactCalendarTest.this, "There is no data to display",
-                            Toast.LENGTH_SHORT).show();
                 }
+            } catch(JSONException e){
+                e.printStackTrace();
+            }
+        }
+    }
 
 
-            } catch (JSONException e) {
+
+
+
+
+    private class appointmentsAPI extends AsyncTask<String, String, String> {
+        String userId, userToken;
+
+
+        private appointmentsAPI(String userId, String userToken) {
+            this.userId = userId;
+            this.userToken = userToken;
+        }
+
+
+        @Override
+        protected void onPreExecute() {
+
+            super.onPreExecute();
+            Log.d("error", "statusReport: onPreExecute e dhukse!!!");
+
+        }
+
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            Log.d("error", "statusReport: doInBackground e dhukse!!!");
+
+            String resultToDisplay = "";
+//*****************************************************************
+
+
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost("http://182.160.109.132/api/doctor-schedule/"+userId);
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
+            nameValuePairs.add(new BasicNameValuePair("doctor_id", userId));
+            nameValuePairs.add(new BasicNameValuePair("token", userToken));
+
+
+//// Execute HTTP Post Request
+            HttpResponse response = null;
+            try {
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                response = httpclient.execute(httppost);
+                resultToDisplay = EntityUtils.toString(response.getEntity());
+
+                Log.v("Util response", resultToDisplay);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+            //**************************************************************
+            return resultToDisplay;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            try {
+                Log.d("jsonData", "+++++++++" + result);
+                JSONObject jsonObj = new JSONObject(result);
+                JSONObject json = new JSONObject(jsonObj.getString("result"));
+
+
+                if (json.getString("status").equals("success")) {
+                    JSONArray scheduleArray = json.getJSONArray("appointments");
+
+                    Log.d("array", "length of scheduleArray: " + scheduleArray.length());
+
+                    allItems.clear();
+
+                    if(scheduleArray.length()!=0) {
+
+                        for (int i = 0; i < scheduleArray.length(); i++) {
+
+                            JSONObject scheduleJson = scheduleArray.getJSONObject(i);
+                            Log.d("jsonData", "jsonData#" + i + "+++++++++" + scheduleJson);
+                            JSONObject patientData = scheduleJson.getJSONObject("patient");
+                            JSONObject patientProfileData = patientData.getJSONObject("profile");
+
+
+                            appointments = new AppointmentListModelClass();
+                            appointments.setDay(scheduleJson.getString("appointment_date"));
+                            appointments.setStartTime(scheduleJson.getString("appointment_start_time"));
+                            appointments.setEndTime(scheduleJson.getString("appointment_end_time"));
+                            appointments.setStatus(scheduleJson.getString("status"));
+                            appointments.setPatientAvatar(patientData.getString("avatar"));
+                            appointments.setPatientFirstName(patientProfileData.getString("first_name"));
+                            appointments.setPatientLastName(patientProfileData.getString("last_name"));
+                            allItems.add(schedule);
+
+
+                            if(schedule.getStatus().equals("approved")) {
+                                dayInString = appointments.getDay().substring(8,10);
+                                monthInString = appointments.getDay().substring(5,7);
+                                yearInString = appointments.getDay().substring(0,4);
+
+                                addEvents(Integer.parseInt(dayInString), Integer.parseInt(monthInString)-1, Integer.parseInt(yearInString));
+                            }
+                        }
+                    }
+
+                }
+            } catch(JSONException e){
                 e.printStackTrace();
             }
         }

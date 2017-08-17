@@ -5,21 +5,25 @@ package com.arabi.eventcalendar;
  */
 
 public class AppointmentListModelClass {
-    private String patientName;
+    private String patientFirstName;
+    private String patientLastName;
     private String reason;
     private String startTime;
     private String endTime;
     private int profileImage;
+    private String patientAvatar;
     private String day;
     private String status;
     private String timeDuration;
 
-    public AppointmentListModelClass(String patientName, String reason, String startTime, String endTime, int profileImage, String day, String status, String timeDuration) {
-        this.patientName = patientName;
+    public AppointmentListModelClass(String patientFirstName, String patientLastName, String reason, String startTime, String endTime, int profileImage, String patientAvatar, String day, String status, String timeDuration) {
+        this.patientFirstName = patientFirstName;
+        this.patientLastName = patientLastName;
         this.reason = reason;
         this.startTime = startTime;
         this.endTime = endTime;
         this.profileImage = profileImage;
+        this.patientAvatar = patientAvatar;
         this.day = day;
         this.status = status;
         this.timeDuration = timeDuration;
@@ -45,12 +49,20 @@ public class AppointmentListModelClass {
         this.status = status;
     }
 
-    public String getPatientName() {
-        return patientName;
+    public String getPatientFirstName() {
+        return patientFirstName;
     }
 
-    public void setPatientName(String patientName) {
-        this.patientName = patientName;
+    public void setPatientFirstName(String patientFirstName) {
+        this.patientFirstName = patientFirstName;
+    }
+
+    public String getPatientLastName() {
+        return patientLastName;
+    }
+
+    public void setPatientLastName(String patientLastName) {
+        this.patientLastName = patientLastName;
     }
 
 
@@ -95,4 +107,11 @@ public class AppointmentListModelClass {
         this.timeDuration = timeDuration;
     }
 
+    public String getPatientAvatar() {
+        return patientAvatar;
+    }
+
+    public void setPatientAvatar(String patientAvatar) {
+        this.patientAvatar = patientAvatar;
+    }
 }

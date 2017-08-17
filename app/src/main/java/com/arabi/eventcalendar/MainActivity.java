@@ -48,21 +48,13 @@ public class MainActivity extends AppCompatActivity {
 
     private List<AppointmentListModelClass> pendingJobItem;
     private AppointmentListAdapter adapter;
-    CalendarDay currentDay, eventCalendar;
+    CalendarDay currentDay;
     MaterialCalendarView calendar;
-    GridLayoutManager layoutManager;
-    int visibleItemCount;
-    int totalItemCount;
-    int pastVisibleItems;
     Calendar cal;
     int scrollState;
     DayViewDecorator currentDayDecorator;
-    ArrayList daysOfWeek;
     Boolean isSelected=true, isCurrentDayDecoratorAdded = false;
     String currentDayInString, selectedDayInString, dayInString, monthInString, yearInString, dateInString;
-    HashSet<CalendarDay> calendarDayList;
-    RecyclerView.OnScrollListener mListener;
-
     RecyclerView.LayoutManager mLayoutManager;
 
 

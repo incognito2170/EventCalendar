@@ -136,7 +136,7 @@ public class AppointmentListAdapter extends RecyclerView.Adapter<AppointmentList
         public void onClick(View v) {
             switch (v.getId()){
                 case R.id.image_stuff_profile:
-                    Intent testIntent = new Intent(context, PatientProfile.class);
+                    Intent testIntent = new Intent(context, MainActivity.class);
                     context.startActivity(testIntent);
                     break;
             }
