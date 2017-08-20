@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+
+    <item
+        android:id="@+id/action_search"
+        android:title="Calendar View Toggle"
+        android:icon="@drawable/ic_calendar_hide"
+        app:showAsAction="ifRoom">
+    </item>
+
+    <item
+        android:id="@+id/action_add"
+        android:title="Create Appointment"
+        android:icon="@drawable/ic_add"
+        app:showAsAction="ifRoom">
+    </item>
+
+
+</menu>

@@ -57,10 +57,19 @@
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
 
+            <TextView
+                android:id="@+id/tv_reason_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pain in chest"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="13sp"
+                tools:ignore="HardcodedText" />
+
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="7dp"
                 android:orientation="horizontal">
 
                 <TextView

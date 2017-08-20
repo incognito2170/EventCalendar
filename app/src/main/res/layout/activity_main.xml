@@ -4,12 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:id="@+id/mainLayout"
     tools:context="com.arabi.eventcalendar.MainActivity">
 
+
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/tool_bar">
+    </include>
 
     <com.prolificinteractive.materialcalendarview.MaterialCalendarView
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/calendarView"
+        android:layout_below="@+id/tool_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="10dp"
@@ -21,13 +29,40 @@
         app:mcv_arrowColor="@color/white"
         android:background="#3F51B5"/>
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_below="@+id/calendarView"
+        android:padding="20dp"
+        android:text="No appointments today"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_below="@+id/textView"
+        android:padding="20dp"
+        android:text="LOADING..."
+        android:textSize="20sp"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
 
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_pending_works"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/calendarView"
+        android:layout_below="@+id/textView1"
         android:padding="5dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 

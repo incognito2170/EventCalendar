@@ -49,7 +49,8 @@ public class AppointmentListAdapter extends RecyclerView.Adapter<AppointmentList
 
         AppointmentListModelClass stuffsPendingJobs = pendingJobItems.get(position);
 
-        holder.tvServiceName.setText(stuffsPendingJobs.getPatientName());
+        holder.tvServiceName.setText(stuffsPendingJobs.getPatientFirstName()+" "+stuffsPendingJobs.getPatientLastName());
+        holder.tvReasonName.setText(stuffsPendingJobs.getReason());
         holder.tvStartTime.setText(stuffsPendingJobs.getStartTime());
         holder.tvEndTime.setText(stuffsPendingJobs.getEndTime());
         holder.pop_up_icon.setOnClickListener(new View.OnClickListener() {
@@ -66,7 +67,6 @@ public class AppointmentListAdapter extends RecyclerView.Adapter<AppointmentList
                         switch (item.getItemId()) {
                             case R.id.changeAppointment:
                                 //handle menuItem1 click
-                                Toast.makeText(context,"Change Appointment clicked",Toast.LENGTH_SHORT).show();
                                 AlertDialog alertDialog = new AlertDialog.Builder(context).create();
                                 alertDialog.setTitle("Change Appointment Date");
                                 alertDialog.setIcon(R.mipmap.ic_launcher);
@@ -81,7 +81,6 @@ public class AppointmentListAdapter extends RecyclerView.Adapter<AppointmentList
                                 break;
                             case R.id.cancelAppointment:
                                 //handle menuItem2 click
-                                Toast.makeText(context,"Cancel Appointment clicked",Toast.LENGTH_SHORT).show();
                                 AlertDialog alertDialog1 = new AlertDialog.Builder(context).create();
                                 alertDialog1.setTitle("Cancel Appointment");
                                 alertDialog1.setIcon(R.mipmap.ic_launcher);
@@ -103,7 +102,7 @@ public class AppointmentListAdapter extends RecyclerView.Adapter<AppointmentList
             }
         });
 
-        Glide.with(context).load(stuffsPendingJobs.getProfileImage()).into(holder.imageStuffProfile);
+        Glide.with(context).load("http://182.160.109.132/"+stuffsPendingJobs.getPatientAvatar()).into(holder.imageStuffProfile);
 
     }
 
@@ -118,6 +117,8 @@ public class AppointmentListAdapter extends RecyclerView.Adapter<AppointmentList
         CircularImageView imageStuffProfile;
         @BindView(R.id.tv_service_name)
         TextView tvServiceName;
+        @BindView(R.id.tv_reason_name)
+        TextView tvReasonName;
         @BindView(R.id.tv_start_time)
         TextView tvStartTime;
         @BindView(R.id.tv_end_time)
@@ -142,4 +143,5 @@ public class AppointmentListAdapter extends RecyclerView.Adapter<AppointmentList
             }
         }
     }
+
 }
