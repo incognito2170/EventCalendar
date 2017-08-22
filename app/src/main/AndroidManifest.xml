@@ -18,17 +18,21 @@
             android:name=".MainActivity"
             android:label="Event Calendar"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".PatientProfile" />
         <activity
             android:name=".CompactCalendarTest"
             android:label="Event Calendar"
             android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".MyAppointmentsActivity"
+            android:label="My Appointments"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 
